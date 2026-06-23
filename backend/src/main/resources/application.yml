@@ -44,7 +44,8 @@ server:
     session:
       timeout: 30m
       cookie:
-        same-site: lax
+        same-site: none
+        secure: true
         http-only: true
 
 salesforce:

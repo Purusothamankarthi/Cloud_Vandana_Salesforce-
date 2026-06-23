@@ -1,0 +1,85 @@
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.spinner-fullscreen {
+  min-height: 100vh;
+  background-color: #0d6efd;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Decorative Circles matching Login Page */
+.spinner-fullscreen::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #0b5ed7 0%, #084298 100%);
+  border-radius: 50%;
+  top: -100px;
+  right: -50px;
+  z-index: 0;
+}
+
+.spinner-fullscreen::after {
+  content: '';
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #0b5ed7 0%, #084298 100%);
+  border-radius: 50%;
+  bottom: -50px;
+  left: -50px;
+  z-index: 0;
+}
+
+.spinner-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 3rem 4rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.spinner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.spinner-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid rgba(13, 110, 253, 0.15);
+  border-top-color: #0d6efd;
+  animation: spin 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  position: relative;
+}
+
+.spinner-ring-inner {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #0052cc;
+  animation: spin 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
+}
+
+.spinner-message {
+  color: #555555;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

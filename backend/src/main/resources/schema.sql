@@ -1,0 +1,10 @@
+CREATE DATABASE IF NOT EXISTS validation_db;
+USE validation_db;
+
+CREATE TABLE IF NOT EXISTS requirements (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

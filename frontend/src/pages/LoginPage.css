@@ -288,11 +288,32 @@
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
+    min-height: auto;
   }
   .login-left {
-    padding: 30px;
+    padding: 20px;
+    flex: none;
+  }
+  .login-left::before, .login-left::after {
+    display: none;
+  }
+  .login-left h1 {
+    font-size: 1.5rem;
+  }
+  .login-left h2 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  .login-left p {
+    display: none;
   }
   .login-right {
-    padding: 30px;
+    padding: 25px 20px;
+  }
+  .login-right h2 {
+    font-size: 1.5rem;
+  }
+  .login-right-content {
+    max-width: 100%;
   }
 }

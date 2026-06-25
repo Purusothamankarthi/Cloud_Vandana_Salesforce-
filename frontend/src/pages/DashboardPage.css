@@ -261,10 +261,23 @@
 
 @media (max-width: 768px) {
   .dashboard-main {
-    padding: 1.25rem;
+    margin: 15px;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  .dashboard-content {
+    padding: 1rem;
   }
   .dashboard-header {
     flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+  .dashboard-actions {
+    justify-content: space-between;
   }
   .dashboard-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -277,6 +290,9 @@
 
 @media (max-width: 480px) {
   .dashboard-stats {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+  }
+  .dashboard-actions {
+    flex-direction: column;
   }
 }

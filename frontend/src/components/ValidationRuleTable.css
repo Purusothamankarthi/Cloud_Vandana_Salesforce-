@@ -173,7 +173,14 @@
 .rule-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
+
+.rule-table thead th:nth-child(1) { width: 28%; }
+.rule-table thead th:nth-child(2) { width: 28%; }
+.rule-table thead th:nth-child(3) { width: 22%; }
+.rule-table thead th:nth-child(4) { width: 12%; }
+.rule-table thead th:nth-child(5) { width: 10%; text-align: right; }
 
 .rule-table thead th {
   padding: 0.85rem 1.25rem;
@@ -217,11 +224,15 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  overflow: hidden;
 }
 
 .rule-fullname {
   font-weight: 600;
   color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .rule-pending-badge {
@@ -238,10 +249,11 @@
 .rule-description,
 .rule-error-msg {
   color: var(--text-secondary);
-  max-width: 220px;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .rule-status-badge {

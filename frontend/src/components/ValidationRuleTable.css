@@ -365,9 +365,19 @@
     grid-template-columns: 1fr;
   }
   .rule-desc-cell,
-  .rule-error-cell {
+  .rule-error-cell,
+  .rule-table thead th:nth-child(2),
+  .rule-table thead th:nth-child(3) {
     display: none;
   }
+  .rule-table thead th,
+  .rule-table td {
+    padding: 0.65rem 0.5rem;
+  }
+  .rule-table thead th:nth-child(1) { width: auto; }
+  .rule-table thead th:nth-child(4) { width: 85px; }
+  .rule-table thead th:nth-child(5) { width: 70px; text-align: right; }
+  .rule-toggle-cell { text-align: right; }
 }
 
 

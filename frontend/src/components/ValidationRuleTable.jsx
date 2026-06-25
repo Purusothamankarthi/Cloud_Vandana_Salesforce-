@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import RuleToggleSwitch from './RuleToggleSwitch';
 import './ValidationRuleTable.css';
 
@@ -6,6 +6,14 @@ export default function ValidationRuleTable({ rules, onToggleRule, onToggleAll, 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all'); // 'all' | 'active' | 'inactive'
   const [expandedRule, setExpandedRule] = useState(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterStatus, pageSize]);
 
   const filteredRules = useMemo(() => {
     return rules.filter((rule) => {
@@ -26,6 +34,11 @@ export default function ValidationRuleTable({ rules, onToggleRule, onToggleAll, 
   const activeCount = rules.filter((r) => r.active).length;
   const inactiveCount = rules.length - activeCount;
   const changedCount = Object.keys(pendingChanges).length;
+
+  const paginatedRules = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredRules.slice(startIndex, startIndex + pageSize);
+  }, [filteredRules, currentPage, pageSize]);
 
   return (
     <div className="rule-table-container">
@@ -126,7 +139,7 @@ export default function ValidationRuleTable({ rules, onToggleRule, onToggleAll, 
               </tr>
             </thead>
             <tbody>
-              {filteredRules.map((rule) => {
+              {paginatedRules.map((rule) => {
                 const isPending = pendingChanges[rule.fullName] !== undefined;
                 const displayActive = isPending ? pendingChanges[rule.fullName] : rule.active;
 
@@ -168,6 +181,42 @@ export default function ValidationRuleTable({ rules, onToggleRule, onToggleAll, 
           </table>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {filteredRules.length > 0 && (
+        <div className="rule-pagination">
+          <div className="pagination-info">
+            Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredRules.length)} of {filteredRules.length} rules
+          </div>
+          <div className="pagination-controls">
+            <select 
+              className="page-size-select"
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+            >
+              <option value={5}>5 per page</option>
+              <option value={10}>10 per page</option>
+              <option value={20}>20 per page</option>
+              <option value={50}>50 per page</option>
+            </select>
+            <button 
+              className="pagination-btn" 
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="pagination-current">Page {currentPage} of {Math.max(1, Math.ceil(filteredRules.length / pageSize))}</span>
+            <button 
+              className="pagination-btn" 
+              onClick={() => setCurrentPage(p => Math.min(Math.ceil(filteredRules.length / pageSize), p + 1))}
+              disabled={currentPage === Math.ceil(filteredRules.length / pageSize) || filteredRules.length === 0}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Expanded detail */}
       {expandedRule && (

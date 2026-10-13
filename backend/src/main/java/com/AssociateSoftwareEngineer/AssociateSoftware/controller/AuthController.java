@@ -43,12 +43,24 @@ public class AuthController {
      * Redirect user to Salesforce OAuth login page.
      */
     @GetMapping("/login")
-    public ResponseEntity<Void> login() {
+    public ResponseEntity<Void> login(jakarta.servlet.http.HttpServletRequest request) {
         log.info("Login endpoint called — redirecting to Salesforce OAuth");
-        String authUrl = oAuthService.getAuthorizationUrl();
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create(authUrl))
-                .build();
+        try {
+            String authUrl = oAuthService.getAuthorizationUrl();
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(authUrl))
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to initiate login: {}", e.getMessage());
+            String errorMsg = java.net.URLEncoder.encode(
+                    e.getMessage() != null ? e.getMessage() : "Failed to initiate login",
+                    java.nio.charset.StandardCharsets.UTF_8
+            );
+            String target = resolveRedirectBase(request) + "/error?message=" + errorMsg;
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(target))
+                    .build();
+        }
     }
 
     /**
@@ -58,7 +70,8 @@ public class AuthController {
     @GetMapping("/callback")
     public ResponseEntity<Void> handleCallback(
             @RequestParam String code,
-            HttpSession session) {
+            HttpSession session,
+            jakarta.servlet.http.HttpServletRequest request) {
 
         log.info("OAuth callback received");
 
@@ -71,16 +84,33 @@ public class AuthController {
 
             log.info("Authentication successful — redirecting to dashboard");
 
+            String target = resolveRedirectBase(request) + "/dashboard";
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .location(URI.create(frontendUrl + "/dashboard"))
+                    .location(URI.create(target))
                     .build();
 
         } catch (Exception e) {
             log.error("OAuth callback error", e);
+            String errorMsg = java.net.URLEncoder.encode(
+                    e.getMessage() != null ? e.getMessage() : "Authentication failed",
+                    java.nio.charset.StandardCharsets.UTF_8
+            );
+            String target = resolveRedirectBase(request) + "/error?message=" + errorMsg;
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .location(URI.create(frontendUrl + "/error?message=Authentication+failed"))
+                    .location(URI.create(target))
                     .build();
         }
+    }
+
+    private String resolveRedirectBase(jakarta.servlet.http.HttpServletRequest request) {
+        if (frontendUrl != null && !frontendUrl.isEmpty() && !"http://localhost:5173".equals(frontendUrl)) {
+            return frontendUrl;
+        }
+        String host = request.getHeader("Host");
+        if (host != null && !host.contains("localhost")) {
+            return "";
+        }
+        return frontendUrl != null ? frontendUrl : "http://localhost:5173";
     }
 
     /**
@@ -136,4 +166,10 @@ public class AuthController {
 
         return ResponseEntity.ok(new ApiResponseDTO<>(true, "Logged out successfully", null));
     }
+
+    @GetMapping("/favicon.ico")
+    public ResponseEntity<Void> favicon() {
+        return ResponseEntity.noContent().build();
+    }
 }
+

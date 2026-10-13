@@ -45,8 +45,8 @@ public class SalesforceOAuthService {
      * The frontend redirects the user's browser to this URL.
      */
     public String getAuthorizationUrl() {
-        if (clientId == null || clientId.trim().isEmpty()) {
-            throw new SalesforceException("Salesforce Client ID (SF_CLIENT_ID) is not configured in environment variables.");
+        if (clientId == null || clientId.trim().isEmpty() || "dummy-client-id".equalsIgnoreCase(clientId.trim())) {
+            throw new SalesforceException("Salesforce Client ID (SF_CLIENT_ID) is not configured in environment variables. Please provide your Salesforce Connected App Consumer Key.");
         }
         String baseUrl = salesforceConfig.getInstanceUrl();
         try {

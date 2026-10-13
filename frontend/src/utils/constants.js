@@ -1,5 +1,8 @@
 // API base URL — points to the Spring Boot backend
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL = (rawBaseUrl && rawBaseUrl.trim() !== '')
+  ? rawBaseUrl.replace(/\/+$/, '')
+  : (import.meta.env.PROD ? '' : 'http://localhost:8080');
 
 // App metadata
 export const APP_NAME = 'SF Rule Manager';

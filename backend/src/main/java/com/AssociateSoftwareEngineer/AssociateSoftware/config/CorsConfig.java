@@ -16,16 +16,19 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${app.cors.allowed-origins:http://localhost:5173}")
+    @Value("${app.cors.allowed-origins:*}")
     private String allowedOrigins;
 
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Parse comma-separated origins
-        List<String> origins = Arrays.asList(allowedOrigins.split(","));
-        config.setAllowedOrigins(origins);
+        if (allowedOrigins == null || "*".equals(allowedOrigins.trim())) {
+            config.addAllowedOriginPattern("*");
+        } else {
+            List<String> origins = Arrays.asList(allowedOrigins.split(","));
+            origins.forEach(origin -> config.addAllowedOriginPattern(origin.trim()));
+        }
 
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("*"));

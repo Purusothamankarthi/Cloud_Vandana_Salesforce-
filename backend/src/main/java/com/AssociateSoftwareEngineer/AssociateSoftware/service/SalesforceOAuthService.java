@@ -26,13 +26,13 @@ public class SalesforceOAuthService {
     private final WebClient webClient;
     private final SalesforceConfig salesforceConfig;
 
-    @Value("${spring.security.oauth2.client.registration.salesforce.client-id}")
+    @Value("${spring.security.oauth2.client.registration.salesforce.client-id:}")
     private String clientId;
 
-    @Value("${spring.security.oauth2.client.registration.salesforce.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.salesforce.client-secret:}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.salesforce.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.salesforce.redirect-uri:http://localhost:8080/api/auth/callback}")
     private String redirectUri;
 
     public SalesforceOAuthService(WebClient webClient, SalesforceConfig salesforceConfig) {
@@ -45,6 +45,9 @@ public class SalesforceOAuthService {
      * The frontend redirects the user's browser to this URL.
      */
     public String getAuthorizationUrl() {
+        if (clientId == null || clientId.trim().isEmpty()) {
+            throw new SalesforceException("Salesforce Client ID (SF_CLIENT_ID) is not configured in environment variables.");
+        }
         String baseUrl = salesforceConfig.getInstanceUrl();
         try {
             return baseUrl + "/services/oauth2/authorize"
